@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <graphics.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 int x_pos = 230;
 int y_pos = 240;
@@ -13,7 +14,9 @@ struct bkb {
     int ypos;
     bool fire;
 };
+int enemy_x, enemy_y;
 
+int enemy(int , int );
 struct bkb getkb(void);
 
 int main(void)
@@ -45,6 +48,10 @@ int main(void)
         while(is_fire){
             while(battle_y>=0){
                 battle_y+=-speed;
+                int re = enemy(battle_x, battle_y);
+                if(re){
+                    battle_y = -1;
+                }
                 circle(x_pos,y_pos,10);
                 outtextxy(battle_x,battle_y,battle);
                 struct bkb backbk = getkb();
@@ -79,4 +86,17 @@ struct bkb getkb(void)
     bkbs.ypos=y_pos;
 
     return (bkbs);
+}
+
+int enemy(int battle_x, int battle_y)
+{
+    enemy_x = 20;
+    enemy_y = 20;
+    while(enemy_y){
+        setcolor(RED);
+        circle(enemy_x,enemy_y,10);
+        if(enemy_y==battle_y && enemy_x==battle_x){
+            return 1;
+        }
+    }
 }
