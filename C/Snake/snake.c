@@ -16,7 +16,7 @@ int snake_x, snake_y, snake_len = 3, snake_long, snake_speed;
 int x_move, y_move;
 int last_x, last_y;
 int food_x, food_y;
-int snake[3][2] = {0};
+int snake[10][2] = {0};
 char ch, last_ch;
 int scores;
 
@@ -26,6 +26,7 @@ int main(void)
     setcaption("Snake");
     setbkcolor(WHITE);
     begin:cleardevice();
+    snake_len = 3;
     load();
     start();
     while(1){
@@ -34,13 +35,20 @@ int main(void)
         UpdateWithoutInput();
         food();
         delay(150);
-
-            if(snake[0][0]<0||snake[0][0]>640||snake[0][1]<0||snake[0][1]>480){
-        cleardevice();
-        xyprintf(260,220,"Game Over");
-        xyprintf(260,250,"Push R To Continue");
-        if(getch()=='R'){
+        for(int n = 1;n<snake_len;++n){
+            if(snake[0][0]==snake[n][0]&&snake[0][1]==snake[n][1]){
+                goto game_over;
+            }
+        }
+        if(snake[0][0]<0||snake[0][0]>640||snake[0][1]<0||snake[0][1]>480){
+            game_over:;
+            cleardevice();
+            xyprintf(260,220,"Game Over");
+            xyprintf(260,250,"Push R or r To Continue");
+            if(getch()=='R'|| getch() =='r'){
             goto begin;
+            } else {
+                closegraph();
             }
         }
     }
@@ -76,12 +84,13 @@ void start(void){
 
 void UpdateWithInput(void)
 {
-    last_x = snake[2][0];
-    last_y = snake[2][1];
-    snake[2][0] = snake[1][0];
-    snake[2][1] = snake[1][1];
-    snake[1][0] = snake[0][0];
-    snake[1][1] = snake[0][1];
+    last_x = snake[snake_len-1][0];
+    last_y = snake[snake_len-1][1];
+    for(int a = snake_len-1;a>0;--a){
+        snake[a][0] = snake[a-1][0];
+        snake[a][1] = snake[a-1][1];
+    }
+
     if(kbhit()){
         ch = getch();
         if(last_ch != ch){
@@ -150,5 +159,8 @@ void food(void)
         setcolor(RED);
         xyprintf(food_x,food_y,"@");
         ++scores;
+        if(snake_len<10){
+            ++snake_len;
+        }
     }
 }
