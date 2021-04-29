@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <graphics.h>
 
 #define GRAPH_WIDTH 600
@@ -9,8 +10,9 @@ using namespace std;
 void InitGraph();
 void Load();
 void Ball();
+void GetFps();
 
-int ball_x, ball_y, ball_speed_x, ball_speed_y;
+int ball_r, ball_x, ball_y, ball_speed_x, ball_speed_y;
 
 int main()
 {
@@ -18,6 +20,8 @@ int main()
     Load();
     while(1){
         Ball();
+        GetFps();
+        delay_fps(25);
         cleardevice();
     }
     return 0;
@@ -33,8 +37,9 @@ void InitGraph()
 
 void Load()
 {
-    ball_x = GRAPH_WIDTH/2;
-    ball_y = GRAPH_HEIGHT/2;
+    ball_r = 20;
+    ball_x = GRAPH_WIDTH%400;
+    ball_y = GRAPH_HEIGHT%200;
     ball_speed_x = 25;
     ball_speed_y = 15;
 }
@@ -42,34 +47,40 @@ void Load()
 void Ball()
 {
     setcolor(0, NULL);
-    circle(ball_x, ball_y, 10);
-    if(ball_x + ball_speed_x <= 0){
-        ball_x = -(ball_x + ball_speed_x);
+    circle(ball_x, ball_y, ball_r);
+    if(ball_x + ball_speed_x - ball_r <= 0){
+        ball_x = -(ball_x + ball_speed_x - ball_r);
         ball_speed_x = -ball_speed_x;
     } else {
         ball_x += ball_speed_x;
     }
 
-    if(ball_x + ball_speed_x >= 600){
-        ball_x = GRAPH_WIDTH*2 - ball_x - ball_speed_x;
+    if(ball_x + ball_speed_x + ball_r >= 600){
+        ball_x = GRAPH_WIDTH*2 - ball_x - ball_speed_x + ball_r;
         ball_speed_x = -ball_speed_x;
     } else {
         ball_x += ball_speed_x;
     }
 
-    if(ball_y + ball_speed_y <= 0){
-        ball_y = -(ball_y + ball_speed_y);
+    if(ball_y + ball_speed_y - ball_r <= 0){
+        ball_y = -(ball_y + ball_speed_y - ball_r);
         ball_speed_y = -ball_speed_y;
     } else {
         ball_y += ball_speed_y;
     }
 
-    if(ball_y + ball_speed_y >= 400){
-        ball_y = GRAPH_HEIGHT*2 - ball_y - ball_speed_y;
+    if(ball_y + ball_speed_y + ball_r >= 400){
+        ball_y = GRAPH_HEIGHT*2 - ball_y - ball_speed_y + ball_r;
         ball_speed_y = -ball_speed_y;
     } else {
         ball_y += ball_speed_y;
     }
 
-    Sleep(200);
+}
+
+void GetFps()
+{
+    float fps = getfps();
+    setcolor(0);
+    xyprintf(5, 5, "FPS: %.2f", fps);
 }
